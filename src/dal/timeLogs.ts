@@ -1,4 +1,5 @@
 // TODO: Student implementation - Part 2: DAL for time logs
+import { db, TimeLog } from '../db/database.ts';
 
 export async function insertTimeLog(
   ticketId: number,

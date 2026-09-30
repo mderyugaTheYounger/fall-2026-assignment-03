@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {getAllTickets, getTicketById, createTicket, updateTicketStatus} from '../dal/tickets.ts'
 import auth from '../middleware/auth.ts'
+import { insertTimeLog, getTotalHoursForTicket } from '../dal/timeLogs.ts'
 
 const router = Router();
 
@@ -76,4 +77,34 @@ router.patch('/:id/status', auth, async function (req, res) {
 // POST /tickets/:id/time
 // GET /tickets/:id/time
 
+router.post('/:id/time', auth, async function (req, res) {
+  const id = Number(req.params.id);
+  if(isNaN(id)){
+    return res.status(400);
+  }
+  
+  const { hours } = req.body;
+  if(isNan(hours) || hours < 0 ){
+    return res.status(400);
+  }
+
+  const userId = res.locals.Id;
+
+  const timeLog = await insertTimeLog(id, userId, hours);
+  return res.status(201).json(time_log);
+})
+
+router.get('/:id/time', async function (req, res) {
+  const id = Number(req.params.id);
+  if(isNaN(id)){
+    return res.status(400);
+  }
+
+  const hours = await getTotalHoursForTicket(id);
+
+  return res.status(200).json({
+    ticket_id: id,
+    total_hours: hours
+  })
+})
 export default router;
