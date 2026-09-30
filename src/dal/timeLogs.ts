@@ -6,11 +6,33 @@ export async function insertTimeLog(
   hours: number,
 ): Promise<any> {
   // TODO: Student implementation
+
+  const res = await db
+  .insertInto('time_logs')
+  .values({
+      ticket_id: ticketId,
+      user_id: userId,
+      hours: hours,
+    })
+  .returningAll()
+  .executeTakeFirstOrThrow();
+
+  return res;
 }
 
 export async function getTotalHoursForTicket(
   ticketId: number,
 ): Promise<number> {
   // TODO: Student implementation
-  return 0;
+
+  const res = await db
+  .selectFrom('time_logs')
+  .select((eb) => eb.fn.sum<number>('hours').as('total_hours'))
+  .where('ticket_id', '=', ticketId)
+  .executeTakeFirst()
+
+  if(isNaN(res.total_hours)){
+    return 0;
+  }
+  return res;
 }
