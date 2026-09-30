@@ -10,4 +10,20 @@ describe('Part 2: Time Logs Tests', () => {
     // Verify aggregation math
     expect(true).toBe(true);
   });
+
+  it('should log hours for ticket, fetch total hours, and verify aggregation math'), async () => {
+    const log1 = await request(app).post('/tickets/1/time').set('x-user-id', "5").send({hours : 1});
+    const log2 = await request(app).post('/tickets/1/time').set('x-user-id', "5").send({hours : 2}); 
+    expect(log1.status).toBe(201);
+    expect(log2.status).toBe(201);
+
+    const res = await request(app).get('tickets/1/time').set('x-user-id', "5");
+
+    expect(res.status).toBe(200);
+    expect(res.body).toBe({
+      ticket_id: 1,
+      total_hours: 3,
+    })
+
+  }
 });
