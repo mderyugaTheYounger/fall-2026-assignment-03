@@ -59,14 +59,14 @@ router.post('/', auth, async function (req, res) {
 
 router.patch('/:id/status', auth, async function (req, res) {
   const id = Number(req.params.id);
-  const status = req.body[0];
+  const {status} = req.body;
 
   if(!id || isNaN(id) || !status){
     return res.status(400);
   }
 
   const updatedTicket = await updateTicketStatus(id, status.trim());
-  if(!updated){
+  if(!updatedTicket){
     return res.status(404);
   }
 
