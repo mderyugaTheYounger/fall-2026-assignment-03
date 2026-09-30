@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getAllUsers, getUserById, createUser } from '../dal/users.ts'
 
 const router = Router();
 
@@ -7,28 +8,26 @@ const router = Router();
 // GET /users/:id
 // POST /users
 
-interface User {
-  name: string;
-  email: string;
-}
-
-let users: User[] = [
-  {name: "John Doe", email: "John@test.com"},
-  {name: "Jane Doe", email: "Jane@test.com"},
-]
-
-router.get('/users', function(_, res) {
-  return res.json(users);
+router.get('/', async function(_, res) {
+  const users = await getAllUsers();
+  res.json(users);
 });
 
-router.get('/users/id', function(req, res) {
-  return res.json(users[id]);
+router.get('/:id', async function(req, res) {
+  const id = Number(req.params.id);
+  const user = await getUserById(id);
+
+  if(!user){
+    return res.status(404);
+  }
+
+  res.json(user);
 })
 
-router.post('/users', function(req, res) {
+router.post('/users', async function(req, res) {
   const newUser = req.body;
-  users.push(newUser)
-  return res.satus(201).json({"New User Created"});
+  const ret = await createUser(newUser);
+  return res.status(201).json(newUser);
 })
 
 export default router;
