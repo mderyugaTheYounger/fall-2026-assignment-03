@@ -8,13 +8,12 @@ export function authMiddleware(
   // TODO: Student implementation - Part 1: Authentication Middleware
   // Store the authenticated userId on res.locals.userId
 
-  app.listen()
-  const id = req.headers['X-User-Id'];
+  const id = req.headers['x-user-id'];
   if(req.method === 'POST' || req.method === 'PATCH'){
-    if(id === null || isNan(id)){
-      return res.status(401).json({"Error: Unauthorized"});
+    if(id === null || isNaN(id)){
+      return res.status(401).json({Error: "Unauthorized"});
     }
-    res.locals.userId = req.UserId;
+    res.locals.userId = Number(id);
   }
   next();
 }
